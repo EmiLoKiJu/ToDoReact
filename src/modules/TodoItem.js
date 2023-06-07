@@ -1,7 +1,10 @@
 import { useState } from 'react';
-import styles from './TodoItem.module.css'
+import PropTypes from 'prop-types';
+import styles from './TodoItem.module.css';
 
-const TodoItem = ({ itemProp, setTodos, delTodo, setUpdate }) => {
+const TodoItem = ({
+  itemProp, setTodos, delTodo, setUpdate,
+}) => {
   const completedStyle = {
     fontStyle: 'italic',
     color: '#595959',
@@ -10,23 +13,21 @@ const TodoItem = ({ itemProp, setTodos, delTodo, setUpdate }) => {
   };
 
   const handleChange = (id) => {
-    setTodos((prevState) =>
-      prevState.map((todo) => {
-        if (todo.id === id) {
-          return {
-            ...todo,
-            completed: !todo.completed,
-          };
-        }
-        return todo;
-      })
-    );
+    setTodos((prevState) => prevState.map((todo) => {
+      if (todo.id === id) {
+        return {
+          ...todo,
+          completed: !todo.completed,
+        };
+      }
+      return todo;
+    }));
   };
 
   const [editing, setEditing] = useState(false);
 
-  let viewMode = {};
-  let editMode = {};
+  const viewMode = {};
+  const editMode = {};
   if (editing) {
     viewMode.display = 'none';
   } else {
@@ -51,12 +52,12 @@ const TodoItem = ({ itemProp, setTodos, delTodo, setUpdate }) => {
           checked={itemProp.completed}
           onChange={() => handleChange(itemProp.id)}
         />
-        
-        <span style={itemProp.completed ? completedStyle : null} >
-        {itemProp.title}
+
+        <span style={itemProp.completed ? completedStyle : null}>
+          {itemProp.title}
         </span>
-        <button onClick={handleEditing}>Edit</button>
-        <button onClick={() => delTodo(itemProp.id)}>Delete</button>
+        <button type="button" onClick={handleEditing}>Edit</button>
+        <button type="button" onClick={() => delTodo(itemProp.id)}>Delete</button>
       </div>
       <input
         type="text"
@@ -69,4 +70,16 @@ const TodoItem = ({ itemProp, setTodos, delTodo, setUpdate }) => {
     </li>
   );
 };
+
+TodoItem.propTypes = {
+  itemProp: PropTypes.shape({
+    completed: PropTypes.bool.isRequired,
+    id: PropTypes.number.isRequired,
+    title: PropTypes.string.isRequired,
+  }).isRequired,
+  setTodos: PropTypes.func.isRequired,
+  delTodo: PropTypes.func.isRequired,
+  setUpdate: PropTypes.func.isRequired,
+};
+
 export default TodoItem;
